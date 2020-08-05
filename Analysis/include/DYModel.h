@@ -43,7 +43,7 @@ private:
     size_t ht_index;
     size_t njet_index;
     size_t pt_index;
-    std::map<std::pair<size_t,size_t>, SampleDescriptorBase::Point> working_points_map;
+    std::map<std::vector<size_t>, SampleDescriptorBase::Point> working_points_map;
     DYFitModel fit_method;
     bool ht_found;
     std::set<size_t> ht_wp_set;
