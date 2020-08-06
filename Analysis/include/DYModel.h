@@ -9,6 +9,23 @@ This file is part of https://github.com/hh-italian-group/hh-bbtautau. */
 #include "hh-bbtautau/Analysis/include/EventAnalyzerDataId.h"
 #include "RooWorkspace.h"
 #include "RooRealVar.h"
+#include <boost/optional.hpp>
+
+struct working_point{
+    working_point(size_t _n_bjet, size_t _sub_category_2) : n_bjet(_n_bjet), sub_category_2(_sub_category_2) {}
+    working_point(size_t _n_bjet, size_t _sub_category_2, size_t _sub_category_3) : n_bjet(_n_bjet), sub_category_2(_sub_category_2), sub_category_3(_sub_category_3) {}   
+
+    size_t n_bjet;
+    size_t sub_category_2;
+    boost::optional<size_t> sub_category_3;
+
+    bool operator < (working_point wp_2) const{
+      bool bool1 = (wp_2.n_bjet < this->n_bjet) || (wp_2.sub_category_2 < this->sub_category_2);
+      return (!sub_category_3) ? bool1 : (bool1 || (wp_2.sub_category_3 < this->sub_category_3)); 
+    }
+};
+
+
 
 namespace analysis{
 
