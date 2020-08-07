@@ -45,34 +45,34 @@ DYModel::DYModel(const SampleDescriptor& sample,const std::string& working_path)
         const size_t n_b_partons = Parse<size_t>(sample_wp.param_values.at(b_index));
         if(ht_found){
             const size_t ht_wp = Parse<size_t>(sample_wp.param_values.at(ht_index));
-            std::vector<size_t> temp_vec{n_b_partons,ht_wp};
-            working_points_map[temp_vec] = sample_wp;
+            working_point wp(n_b_partons, {}, ht_wp);
+            working_points_map[wp] = sample_wp;
             ht_wp_set.insert(ht_wp);
         }
         else if(jet_found && !pt_found){
             const size_t njet_wp = Parse<size_t>(sample_wp.param_values.at(njet_index));
-	    std::vector<size_t> temp_vec{n_b_partons,njet_wp};
-            working_points_map[temp_vec] = sample_wp;
+	    working_point wp(n_b_partons, {}, {}, njet_wp);
+            working_points_map[wp] = sample_wp;
             njet_wp_set.insert(njet_wp);
         }
         else if(pt_found){
             const size_t pt_wp = Parse<size_t>(sample_wp.param_values.at(pt_index));
 	    if(!jet_found){
-		std::vector<size_t> temp_vec{n_b_partons,pt_wp};
-		working_points_map[temp_vec] = sample_wp;
+		working_point wp(n_b_partons, pt_wp);
+		working_points_map[wp] = sample_wp;
 		pt_wp_set.insert(pt_wp);
 	    }
    	    else if(jet_found){
 		const size_t njet_wp = Parse<size_t>(sample_wp.param_values.at(njet_index));
-		std::vector<size_t> temp_vec{n_b_partons,njet_wp,pt_wp};
-		working_points_map[temp_vec] = sample_wp;
+		working_point wp(n_b_partons, pt_wp, {}, njet_wp);
+		working_points_map[wp] = sample_wp;
 		pt_wp_set.insert(pt_wp);
 		njet_wp_set.insert(njet_wp);
 	    }
         }
         else{
-	    std::vector<size_t> temp_vec{n_b_partons,0};
-	    working_points_map[temp_vec] = sample_wp;
+	    working_point wp(n_b_partons);
+	    working_points_map[wp] = sample_wp;
 	}
     }
     if(fit_method == DYFitModel::NbjetBins || fit_method == DYFitModel::NbjetBins_htBins ||
@@ -188,15 +188,15 @@ void DYModel::ProcessEvent(const EventAnalyzerDataId& anaDataId, EventInfo& even
                                                      event->genJets_hadronFlavour.end(), b_Flavour));*/
 
 
-    std::vector<size_t> p{std::min<size_t>(2,n_bJets),0};
+    working_point p(std::min<size_t>(2,n_bJets));
     if(ht_found){
         double lheHT_otherjets = event->lhe_HT;
         size_t ht_wp = Get2WP(lheHT_otherjets,ht_wp_set);
-        p.at(1) = (ht_wp);
+        p.ht_wp = ht_wp;
     }
-    else if(jet_found){
+    else if(jet_found && !pt_found){
         size_t njet_wp = Get2WP(n_selected_gen_jets,njet_wp_set);
-        p.at(1) = njet_wp;
+        p.njet_wp = njet_wp;
     }
     else if(pt_found){
         double gen_pt = 0.0;
@@ -214,11 +214,14 @@ void DYModel::ProcessEvent(const EventAnalyzerDataId& anaDataId, EventInfo& even
             if(event.GetLeg(1)->gen_match() == GenLeptonMatch::Muon && event.GetLeg(2)->gen_match() == GenLeptonMatch::Muon) gen_pt = (event.GetLeg(1)->gen_p4() + event.GetLeg(2)->gen_p4()).Pt();
         }
         size_t pt_wp = Get2WP(gen_pt,pt_wp_set);
-	if(!jet_found) p.push_back(pt_wp);
-	else p.at(1) = pt_wp;
+	p.pt_wp = pt_wp;
+        if(jet_found){
+		size_t njet_wp = Get2WP(n_selected_gen_jets,njet_wp_set);
+		p.njet_wp = njet_wp;
+	} 
     }
 
-    std::map<std::vector<size_t>,SampleDescriptorBase::Point>::iterator it = working_points_map.find(p);
+    std::map<working_point,SampleDescriptorBase::Point>::iterator it = working_points_map.find(p);
     if(it == working_points_map.end())
         throw exception("Unable to find WP for DY event with  n_selected_bjet = %1%") % n_bJets;
         //throw exception("Unable to find WP for DY event with  jets_nTotal_hadronFlavour_b = %1%") % event->jets_nTotal_hadronFlavour_b;
@@ -233,15 +236,15 @@ void DYModel::ProcessEvent(const EventAnalyzerDataId& anaDataId, EventInfo& even
             norm_sf = scale_factor_maps.at(sample_wp.full_name);
         else if(fit_method == DYFitModel::NbjetBins_htBins){
             if(ht_found) norm_sf = scale_factor_maps.at(sample_wp.full_name);
-            else norm_sf = scale_factor_maps.at(sample_wp.full_name+"_"+ToString(it->first.at(1))+HT_suffix());
+            else norm_sf = scale_factor_maps.at(sample_wp.full_name+"_"+ToString(it->first.ht_wp)+HT_suffix());
         }
         else if(fit_method == DYFitModel::NbjetBins_NjetBins){
             if(jet_found) norm_sf = scale_factor_maps.at(sample_wp.full_name);
-            else norm_sf = scale_factor_maps.at(sample_wp.full_name+"_"+ToString(it->first.at(1))+NJet_suffix());
+            else norm_sf = scale_factor_maps.at(sample_wp.full_name+"_"+ToString(it->first.njet_wp)+NJet_suffix());
         }
         else if(fit_method == DYFitModel::NbjetBins_ptBins){
             if(pt_found) norm_sf = scale_factor_maps.at(sample_wp.full_name);
-            else norm_sf = scale_factor_maps.at(sample_wp.full_name+"_"+ToString(it->first.at(1))+Pt_suffix());
+            else norm_sf = scale_factor_maps.at(sample_wp.full_name+"_"+ToString(it->first.pt_wp)+Pt_suffix());
         }
     }
     dataIds[finalId] = std::make_tuple(weight * norm_sf, event.GetMvaScore());

@@ -10,21 +10,7 @@ This file is part of https://github.com/hh-italian-group/hh-bbtautau. */
 #include "RooWorkspace.h"
 #include "RooRealVar.h"
 #include <boost/optional.hpp>
-
-struct working_point{
-    working_point(size_t _n_bjet, size_t _sub_category_2) : n_bjet(_n_bjet), sub_category_2(_sub_category_2) {}
-    working_point(size_t _n_bjet, size_t _sub_category_2, size_t _sub_category_3) : n_bjet(_n_bjet), sub_category_2(_sub_category_2), sub_category_3(_sub_category_3) {}   
-
-    size_t n_bjet;
-    size_t sub_category_2;
-    boost::optional<size_t> sub_category_3;
-
-    bool operator < (working_point wp_2) const{
-      bool bool1 = (wp_2.n_bjet < this->n_bjet) || (wp_2.sub_category_2 < this->sub_category_2);
-      return (!sub_category_3) ? bool1 : (bool1 || (wp_2.sub_category_3 < this->sub_category_3)); 
-    }
-};
-
+#include <boost/optional/optional_io.hpp>
 
 
 namespace analysis{
@@ -34,6 +20,28 @@ public:
     virtual ~DYModelBase(){} //destructor
     virtual void ProcessEvent(const EventAnalyzerDataId& anaDataId, EventInfo& event, double weight,
                       bbtautau::AnaTupleWriter::DataIdMap& dataIds) = 0;
+    struct working_point{
+	working_point(size_t n_bjet, boost::optional<size_t> pt = boost::none, 
+		boost::optional<size_t> ht = boost::none, 
+		boost::optional<size_t> njet = boost::none) 
+	    : n_bjet_wp(n_bjet){
+		if(pt) pt_wp = pt;
+		if(ht) ht_wp = ht;
+		if(njet) njet_wp = njet;
+	    }
+
+	size_t n_bjet_wp;
+	boost::optional<size_t> pt_wp;
+	boost::optional<size_t> ht_wp;
+	boost::optional<size_t> njet_wp;
+
+	bool operator < (const working_point& wp_2) const{
+	    if(n_bjet_wp != wp_2.n_bjet_wp) return n_bjet_wp < wp_2.n_bjet_wp;
+	    if(pt_wp != wp_2.pt_wp) return pt_wp < wp_2.pt_wp;
+	    if(ht_wp != wp_2.ht_wp) return ht_wp < wp_2.ht_wp;
+	    if(njet_wp != wp_2.njet_wp) return njet_wp < wp_2.njet_wp;
+	}
+    };
 
 };
 
@@ -60,7 +68,7 @@ private:
     size_t ht_index;
     size_t njet_index;
     size_t pt_index;
-    std::map<std::vector<size_t>, SampleDescriptorBase::Point> working_points_map;
+    std::map<working_point, SampleDescriptorBase::Point> working_points_map;
     DYFitModel fit_method;
     bool ht_found;
     std::set<size_t> ht_wp_set;
