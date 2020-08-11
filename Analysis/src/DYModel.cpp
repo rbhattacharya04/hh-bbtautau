@@ -13,6 +13,7 @@ DYModel::DYModel(const SampleDescriptor& sample,const std::string& working_path)
     if(b_param_iter == param_names.end())
         throw exception("Unable to find b_parton WP for DY sample");
     b_index = b_param_iter->second;
+ 
 
     ht_found = sample.name_suffix.find(HT_suffix()) != std::string::npos;
 
@@ -33,6 +34,14 @@ DYModel::DYModel(const SampleDescriptor& sample,const std::string& working_path)
         njet_index = njet_param_iter->second;
     }
 
+    cjet_found = sample.name_suffix.find(NCJet_suffix()) != std::string::npos;
+    if(cjet_found){
+        const auto ncjet_param_iter = param_names.find(NCJet_suffix());
+        if(ncjet_param_iter == param_names.end())
+            throw exception("Unable to find ncjet WP for DY smaple");
+        ncjet_index = ncjet_param_iter->second;
+    }
+    
     pt_found = sample.name_suffix.find(Pt_suffix()) != std::string::npos;
     if(pt_found){
         const auto pt_param_iter = param_names.find(Pt_suffix());
@@ -57,17 +66,26 @@ DYModel::DYModel(const SampleDescriptor& sample,const std::string& working_path)
         }
         else if(pt_found){
             const size_t pt_wp = Parse<size_t>(sample_wp.param_values.at(pt_index));
-	    if(!jet_found){
-		working_point wp(n_b_partons, pt_wp);
-		working_points_map[wp] = sample_wp;
-		pt_wp_set.insert(pt_wp);
-	    }
-   	    else if(jet_found){
+            read_jet = jet_found && sample_wp.param_values.at(njet_index) != "all";
+            read_cjet = cjet_found && sample_wp.param_values.at(ncjet_index) != "all";
+   	    if(read_jet){
 		const size_t njet_wp = Parse<size_t>(sample_wp.param_values.at(njet_index));
 		working_point wp(n_b_partons, pt_wp, {}, njet_wp);
 		working_points_map[wp] = sample_wp;
 		pt_wp_set.insert(pt_wp);
 		njet_wp_set.insert(njet_wp);
+	    }
+            else if(read_cjet){
+		const size_t ncjet_wp = Parse<size_t>(sample_wp.param_values.at(ncjet_index));
+		working_point wp(n_b_partons, pt_wp, {}, {}, ncjet_wp);
+		working_points_map[wp] = sample_wp;
+		pt_wp_set.insert(pt_wp);
+		ncjet_wp_set.insert(ncjet_wp);
+            }
+	    else{
+		working_point wp(n_b_partons, pt_wp);
+		working_points_map[wp] = sample_wp;
+		pt_wp_set.insert(pt_wp);
 	    }
         }
         else{
@@ -215,9 +233,13 @@ void DYModel::ProcessEvent(const EventAnalyzerDataId& anaDataId, EventInfo& even
         }
         size_t pt_wp = Get2WP(gen_pt,pt_wp_set);
 	p.pt_wp = pt_wp;
-        if(jet_found){
-		size_t njet_wp = Get2WP(n_selected_gen_jets,njet_wp_set);
-		p.njet_wp = njet_wp;
+        if(read_jet){
+	    size_t njet_wp = Get2WP(n_selected_gen_jets,njet_wp_set);
+	    p.njet_wp = njet_wp;
+	}
+        else if(read_cjet){
+	    size_t ncjet_wp = Get2WP(event->lhe_n_c_partons,ncjet_wp_set);
+	    p.ncjet_wp = ncjet_wp;
 	} 
     }
 
