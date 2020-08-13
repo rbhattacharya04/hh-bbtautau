@@ -74,11 +74,9 @@ private:
     std::set<size_t> ht_wp_set;
     static const std::string& HT_suffix() { static const std::string s = "ht"; return s; }
     bool jet_found;
-    bool read_jet = false;
     std::set<size_t> njet_wp_set;
     static const std::string& NJet_suffix() { static const std::string s = "Jet"; return s; }
     bool cjet_found;
-    bool read_cjet = false;
     std::set<size_t> ncjet_wp_set;
     static const std::string& NCJet_suffix() { static const std::string s = "CJet"; return s; }
     bool pt_found;

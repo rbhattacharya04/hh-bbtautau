@@ -66,8 +66,8 @@ DYModel::DYModel(const SampleDescriptor& sample,const std::string& working_path)
         }
         else if(pt_found){
             const size_t pt_wp = Parse<size_t>(sample_wp.param_values.at(pt_index));
-            read_jet = jet_found && sample_wp.param_values.at(njet_index) != "all";
-            read_cjet = cjet_found && sample_wp.param_values.at(ncjet_index) != "all";
+            bool read_jet = jet_found && sample_wp.param_values.at(njet_index) != "all";
+            bool read_cjet = cjet_found && sample_wp.param_values.at(ncjet_index) != "all";
    	    if(read_jet){
 		const size_t njet_wp = Parse<size_t>(sample_wp.param_values.at(njet_index));
 		working_point wp(n_b_partons, pt_wp, {}, njet_wp);
@@ -233,19 +233,24 @@ void DYModel::ProcessEvent(const EventAnalyzerDataId& anaDataId, EventInfo& even
         }
         size_t pt_wp = Get2WP(gen_pt,pt_wp_set);
 	p.pt_wp = pt_wp;
-        if(read_jet){
+        if(jet_found){
 	    size_t njet_wp = Get2WP(n_selected_gen_jets,njet_wp_set);
 	    p.njet_wp = njet_wp;
 	}
-        else if(read_cjet){
+        else if(cjet_found){
 	    size_t ncjet_wp = Get2WP(event->lhe_n_c_partons,ncjet_wp_set);
 	    p.ncjet_wp = ncjet_wp;
 	} 
     }
 
     std::map<working_point,SampleDescriptorBase::Point>::iterator it = working_points_map.find(p);
-    if(it == working_points_map.end())
-        throw exception("Unable to find WP for DY event with  n_selected_bjet = %1%") % n_bJets;
+    if(it == working_points_map.end()){
+	p.njet_wp =  boost::optional<size_t> ();
+	p.ncjet_wp =  boost::optional<size_t> ();
+        it = working_points_map.find(p);
+	if(it == working_points_map.end())
+	    throw exception("Unable to find WP for DY event with  n_selected_bjet = %1% & pt_wp = %2%" ) % p.n_bjet_wp % p.njet_wp;
+    }
         //throw exception("Unable to find WP for DY event with  jets_nTotal_hadronFlavour_b = %1%") % event->jets_nTotal_hadronFlavour_b;
        // throw exception("Unable to find WP for DY event with lhe_n_b_partons = %1%") % event->lhe_n_b_partons;
 
