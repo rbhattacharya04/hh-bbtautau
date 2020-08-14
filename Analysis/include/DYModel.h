@@ -78,7 +78,7 @@ private:
     static const std::string& NJet_suffix() { static const std::string s = "Jet"; return s; }
     bool cjet_found;
     std::set<size_t> ncjet_wp_set;
-    static const std::string& NCJet_suffix() { static const std::string s = "CJet"; return s; }
+    static const std::string& NCJet_suffix() { static const std::string s = "Cjet"; return s; }
     bool pt_found;
     std::set<size_t> pt_wp_set;
     static const std::string& Pt_suffix() { static const std::string s = "Pt"; return s; }
