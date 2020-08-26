@@ -179,20 +179,32 @@ args.medPt1(), args.medPt2(), args.highPt(),
                                         EventSubCategory(base_sub_category).SetCutResult(SelectionCut::highPtLO, true),
                                         EventSubCategory(base_sub_category).SetCutResult(SelectionCut::vhighPtLO, true)};
                     for(int pt : pt_points){
-                        std::string name = boost::str(boost::format("%1%_%2%b_%3%Pt") % dy_contrib_prefix % nb % pt);
+                        const std::string name = boost::str(boost::format("%1%_%2%b_%3%Pt") % dy_contrib_prefix % nb % pt);
+                        std::string append;
                         if (fit_model==DYFitModel::NbjetBins_ptBins_NjetBins) {
                             if(nb == 0 and pt == 0){
-                                for(int nJet : nJet_points) name.append(boost::str(boost::format("_%1%j") % nJet));
+                                for(int nJet : nJet_points){
+                                  std::string nJet_name = name + boost::str(boost::format("_%1%j") % nJet);
+                                  contribution_names.push_back(nJet_name);
+                                }
                             }
-                            else name.append("_allj");
+                            else{
+                                std::string nJet_name = name + "_allj";
+                                contribution_names.push_back(nJet_name);
+                            }
                         }
-                        if (fit_model==DYFitModel::NbjetBins_ptBins_NcjetBins) {
+                        else if (fit_model==DYFitModel::NbjetBins_ptBins_NcjetBins) {
                             if(nb == 0 and pt == 0){
-                                for(int nCjet : nCjet_points) name.append(boost::str(boost::format("_%1%cj") % nCjet));
+                                for(int nCjet : nCjet_points){
+                                  std::string nCjet_name = name + boost::str(boost::format("_%1%cj") % nCjet);
+                                  contribution_names.push_back(nCjet_name);
+                                }
                             }
-                            else name.append("_allcj");
+                            else{
+                                std::string nCjet_name = name + "_allcj";
+                                contribution_names.push_back(nCjet_name);
                         }
-                        contribution_names.push_back(name);
+                        else contribution_names.push_back(name);
                     }
                 }
             }
