@@ -28,11 +28,14 @@ ENUM_NAMES(SampleType) = {
     {SampleType::VBFHH_Res, "VBFHH_Res"}
 
 };
-enum class DYFitModel { None = 0, NbjetBins = 1, NbjetBins_htBins = 2 , NbjetBins_NjetBins = 3, NbjetBins_ptBins = 4, Htt = 5};
+enum class DYFitModel { None = 0, NbjetBins = 1, NbjetBins_htBins = 2 , NbjetBins_NjetBins = 3, NbjetBins_ptBins = 4, Htt = 5,
+                        NbjetBins_ptBins_NjetBins = 6, NbjetBins_ptBins_NcjetBins = 7};
 ENUM_NAMES(DYFitModel) = {
     { DYFitModel::None, "None" } , { DYFitModel::NbjetBins, "NbjetBins" } ,
     { DYFitModel::NbjetBins_htBins, "NbjetBins_htBins"}, { DYFitModel::NbjetBins_NjetBins, "NbjetBins_NjetBins"},
-    { DYFitModel::NbjetBins_ptBins, "NbjetBins_ptBins"}, { DYFitModel::Htt, "Htt"}
+    { DYFitModel::NbjetBins_ptBins, "NbjetBins_ptBins"}, { DYFitModel::Htt, "Htt"},
+    { DYFitModel::NbjetBins_ptBins_NjetBins, "NbjetBins_ptBins_NjetBins"},
+    { DYFitModel::NbjetBins_ptBins_NcjetBins, "NbjetBins_ptBins_NcjetBins"}
 };
 
 struct EventRegion {
