@@ -203,6 +203,7 @@ args.medPt1(), args.medPt2(), args.highPt(),
                             else{
                                 std::string nCjet_name = name + "_allcj";
                                 contribution_names.push_back(nCjet_name);
+                            }
                         }
                         else contribution_names.push_back(name);
                     }
