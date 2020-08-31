@@ -80,7 +80,7 @@ private:
     std::set<size_t> ncjet_wp_set;
     static const std::string& NCJet_suffix() { static const std::string s = "Cjet"; return s; }
     bool pt_found;
-    std::set<size_t> pt_wp_set;
+    std::map<size_t,std::set<size_t>> pt_wp_map;
     static const std::string& Pt_suffix() { static const std::string s = "Pt"; return s; }
 
     //static constexpr double b_Flavour = 5;

@@ -72,20 +72,20 @@ DYModel::DYModel(const SampleDescriptor& sample,const std::string& working_path)
 		const size_t njet_wp = Parse<size_t>(sample_wp.param_values.at(njet_index));
 		working_point wp(n_b_partons, pt_wp, {}, njet_wp);
 		working_points_map[wp] = sample_wp;
-		pt_wp_set.insert(pt_wp);
+                pt_wp_map.at(n_b_partons).insert(pt_wp);
 		njet_wp_set.insert(njet_wp);
 	    }
             else if(read_cjet){
 		const size_t ncjet_wp = Parse<size_t>(sample_wp.param_values.at(ncjet_index));
 		working_point wp(n_b_partons, pt_wp, {}, {}, ncjet_wp);
 		working_points_map[wp] = sample_wp;
-		pt_wp_set.insert(pt_wp);
+                pt_wp_map.at(n_b_partons).insert(pt_wp);
 		ncjet_wp_set.insert(ncjet_wp);
             }
 	    else{
 		working_point wp(n_b_partons, pt_wp);
 		working_points_map[wp] = sample_wp;
-		pt_wp_set.insert(pt_wp);
+                pt_wp_map.at(n_b_partons).insert(pt_wp);
 	    }
         }
         else{
@@ -231,7 +231,7 @@ void DYModel::ProcessEvent(const EventAnalyzerDataId& anaDataId, EventInfo& even
         if(!Z_found){
             if(event.GetLeg(1)->gen_match() == GenLeptonMatch::Muon && event.GetLeg(2)->gen_match() == GenLeptonMatch::Muon) gen_pt = (event.GetLeg(1)->gen_p4() + event.GetLeg(2)->gen_p4()).Pt();
         }
-        size_t pt_wp = Get2WP(gen_pt,pt_wp_set);
+        size_t pt_wp = Get2WP(gen_pt,pt_wp_map.at(p.n_bjet_wp));
 	p.pt_wp = pt_wp;
         if(jet_found){
 	    size_t njet_wp = Get2WP(n_selected_gen_jets,njet_wp_set);
