@@ -72,20 +72,20 @@ DYModel::DYModel(const SampleDescriptor& sample,const std::string& working_path)
 		const size_t njet_wp = Parse<size_t>(sample_wp.param_values.at(njet_index));
 		working_point wp(n_b_partons, pt_wp, {}, njet_wp);
 		working_points_map[wp] = sample_wp;
-                pt_wp_map.at(n_b_partons).insert(pt_wp);
+                pt_wp_map[n_b_partons].insert(pt_wp);
 		njet_wp_set.insert(njet_wp);
 	    }
             else if(read_cjet){
 		const size_t ncjet_wp = Parse<size_t>(sample_wp.param_values.at(ncjet_index));
 		working_point wp(n_b_partons, pt_wp, {}, {}, ncjet_wp);
 		working_points_map[wp] = sample_wp;
-                pt_wp_map.at(n_b_partons).insert(pt_wp);
+                pt_wp_map[n_b_partons].insert(pt_wp);
 		ncjet_wp_set.insert(ncjet_wp);
             }
 	    else{
 		working_point wp(n_b_partons, pt_wp);
 		working_points_map[wp] = sample_wp;
-                pt_wp_map.at(n_b_partons).insert(pt_wp);
+                pt_wp_map[n_b_partons].insert(pt_wp);
 	    }
         }
         else{
