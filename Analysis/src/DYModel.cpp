@@ -249,7 +249,7 @@ void DYModel::ProcessEvent(const EventAnalyzerDataId& anaDataId, EventInfo& even
 	p.ncjet_wp =  boost::optional<size_t> ();
         it = working_points_map.find(p);
 	if(it == working_points_map.end())
-	    throw exception("Unable to find WP for DY event with  n_selected_bjet = %1% & pt_wp = %2%" ) % p.n_bjet_wp % p.njet_wp;
+            throw exception("Unable to find WP for DY event with  n_selected_bjet = %1% & pt_wp = %2%" ) % p.n_bjet_wp % p.pt_wp;
     }
         //throw exception("Unable to find WP for DY event with  jets_nTotal_hadronFlavour_b = %1%") % event->jets_nTotal_hadronFlavour_b;
        // throw exception("Unable to find WP for DY event with lhe_n_b_partons = %1%") % event->lhe_n_b_partons;
