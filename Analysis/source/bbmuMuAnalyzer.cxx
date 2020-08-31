@@ -67,7 +67,7 @@ protected:
         sub_category.SetCutResult(SelectionCut::medPt1LO, ana_setup.pt_sel_bins.size() > 2
                                                           && pt_mumu > ana_setup.pt_sel_bins.at(1)
                                                           && pt_mumu <= ana_setup.pt_sel_bins.at(2));
-        sub_category.SetCutResult(SelectionCut::lowPt_corrected, ana_setup.pt_sel_bins.size() > 2
+        sub_category.SetCutResult(SelectionCut::lowPtCorrected, ana_setup.pt_sel_bins.size() > 2
                                                            && pt_mumu <= ana_setup.pt_sel_bins.at(2));
         sub_category.SetCutResult(SelectionCut::medPt2LO, ana_setup.pt_sel_bins.size() > 3
                                                           && pt_mumu > ana_setup.pt_sel_bins.at(2)
