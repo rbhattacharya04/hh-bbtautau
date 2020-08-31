@@ -136,8 +136,8 @@ std::istream& operator>>(std::istream& is, EventCategory& eventCategory);
 
 enum class SelectionCut { mh = 0, mhVis = 1, mhMET = 2, KinematicFitConverged = 3, lowMET = 4, lowHT = 5, medHT = 6, highHT = 7,
                           vlowPtNLO = 8, lowPtNLO = 9, medPtNLO = 10, highPtNLO = 11, mtt = 12, vlowPtLO = 13, lowPtLO = 14,
-                          medPt1LO = 15, medPt2LO = 16, highPtLO = 17, vhighPtLO = 18,
-                          MVA_CUT_LIST(19, 100) MVA_first = MVA0, MVA_last = MVA99 };
+                          medPt1LO = 15, medPt2LO = 16, highPtLO = 17, vhighPtLO = 18, lowPt_corrected = 19,
+                          MVA_CUT_LIST(20, 100) MVA_first = MVA0, MVA_last = MVA99 };
 
 #undef MVA_CUT_LIST
 #undef DECL_MVA_SEL
@@ -164,6 +164,7 @@ inline std::map<SelectionCut, std::string> CreateSelectionCutNames()
     names[SelectionCut::medPt2LO] = "medPt2LO";
     names[SelectionCut::highPtLO] = "highPtLO";
     names[SelectionCut::vhighPtLO] = "vhighPtLO";
+    names[SelectionCut::lowPt_corrected] = "lowPt_corrected";
     names[SelectionCut::mtt] = "mtt";
     const size_t MVA_first_index = static_cast<size_t>(SelectionCut::MVA_first);
     const size_t MVA_last_index = static_cast<size_t>(SelectionCut::MVA_last);
