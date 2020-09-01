@@ -181,7 +181,7 @@ args.medPt1(), args.medPt2(), args.highPt(),
                                         EventSubCategory(base_sub_category).SetCutResult(SelectionCut::lowPtCorrected, true)};
                     for(int pt : pt_points){
                         if(nb == 1 || nb == 2) {
-                            if(pt == 10 || pt == 30) continue;
+                            if(pt == args.lowPt() || pt == args.medPt1()) continue;
                         }
                         const std::string name = boost::str(boost::format("%1%_%2%b_%3%Pt") % dy_contrib_prefix % nb % pt);
                         std::string append;
@@ -279,10 +279,14 @@ args.medPt1(), args.medPt2(), args.highPt(),
                    (category == "2j1b" && subcategory == "lowMET_mh_vlowPtLO") ||
                    (category == "2j1b" && subcategory == "lowMET_mtt_lowPtLO") ||
                    (category == "2j1b" && subcategory == "lowMET_mh_lowPtLO") ||
-                   (category == "2j2b+" && subcategory == "lowMET_mtt_vlowPtLO") ||
-                   (category == "2j2b+" && subcategory == "lowMET_mh_vlowPtLO") ||
-                   (category == "2j2b+" && subcategory == "lowMET_mtt_lowPtLO") ||
-                   (category == "2j2b+" && subcategory == "lowMET_mh_lowPtLO")) continue;
+                   (category == "2j1b" && subcategory == "lowMET_mtt_medPt1LO") ||
+                   (category == "2j1b" && subcategory == "lowMET_mh_medPt1LO") ||
+                   (category == "2j2b" && subcategory == "lowMET_mtt_vlowPtLO") ||
+                   (category == "2j2b" && subcategory == "lowMET_mh_vlowPtLO") ||
+                   (category == "2j2b" && subcategory == "lowMET_mtt_lowPtLO") ||
+                   (category == "2j2b" && subcategory == "lowMET_mh_lowPtLO") ||
+                   (category == "2j2b" && subcategory == "lowMET_mtt_medPt1LO") ||
+                   (category == "2j2b" && subcategory == "lowMET_mh_medPt1LO")) continue;
 
                 categories[category+subcategory] = std::make_shared<CategoryModel>(input_file,catId,contribution_names,
                                                                                    args.histo_name(),x,scale_factor_map);
@@ -358,11 +362,14 @@ args.medPt1(), args.medPt2(), args.highPt(),
                    (category == "2j1b" && subcategory == "lowMET_mh_vlowPtLO") ||
                    (category == "2j1b" && subcategory == "lowMET_mtt_lowPtLO") ||
                    (category == "2j1b" && subcategory == "lowMET_mh_lowPtLO") ||
-                   (category == "2j2b+" && subcategory == "lowMET_mtt_vlowPtLO") ||
-                   (category == "2j2b+" && subcategory == "lowMET_mh_vlowPtLO") ||
-                   (category == "2j2b+" && subcategory == "lowMET_mtt_lowPtLO") ||
-                   (category == "2j2b+" && subcategory == "lowMET_mh_lowPtLO")) continue;
-
+                   (category == "2j1b" && subcategory == "lowMET_mtt_medPt1LO") ||
+                   (category == "2j1b" && subcategory == "lowMET_mh_medPt1LO") ||
+                   (category == "2j2b" && subcategory == "lowMET_mtt_vlowPtLO") ||
+                   (category == "2j2b" && subcategory == "lowMET_mh_vlowPtLO") ||
+                   (category == "2j2b" && subcategory == "lowMET_mtt_lowPtLO") ||
+                   (category == "2j2b" && subcategory == "lowMET_mh_lowPtLO") ||
+                   (category == "2j2b" && subcategory == "lowMET_mtt_medPt1LO") ||
+                   (category == "2j2b" && subcategory == "lowMET_mh_medPt1LO")) continue;
 
                 TCanvas* c = new TCanvas(("fit_"+GetCategoryName(cat)+"_"+ToString(sub_cat)).c_str(),
                                      ("fit in eventCategory " + GetCategoryName(cat) + ToString(sub_cat)).c_str(),800,400) ;
