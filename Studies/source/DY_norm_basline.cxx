@@ -177,8 +177,12 @@ args.medPt1(), args.medPt2(), args.highPt(),
                                         EventSubCategory(base_sub_category).SetCutResult(SelectionCut::medPt1LO, true),
                                         EventSubCategory(base_sub_category).SetCutResult(SelectionCut::medPt2LO, true),
                                         EventSubCategory(base_sub_category).SetCutResult(SelectionCut::highPtLO, true),
-                                        EventSubCategory(base_sub_category).SetCutResult(SelectionCut::vhighPtLO, true)};
+                                        EventSubCategory(base_sub_category).SetCutResult(SelectionCut::vhighPtLO, true),
+                                        EventSubCategory(base_sub_category).SetCutResult(SelectionCut::lowPtCorrected, true)};
                     for(int pt : pt_points){
+                        if(nb == 1 || nb == 2) {
+                            if(pt == 10 || pt == 30) continue;
+                        }
                         const std::string name = boost::str(boost::format("%1%_%2%b_%3%Pt") % dy_contrib_prefix % nb % pt);
                         std::string append;
                         if (fit_model==DYFitModel::NbjetBins_ptBins_NjetBins) {
@@ -268,6 +272,18 @@ args.medPt1(), args.medPt2(), args.highPt(),
                 std::cout<<category<<std::endl;
                 std::string subcategory= ToString(catId.Get<EventSubCategory>());
                 std::cout<<subcategory<<std::endl;
+
+                if((category == "2j0b" && subcategory == "lowMET_mtt_lowPtCorrected") ||
+                   (category == "2j0b" && subcategory == "lowMET_mh_lowPtCorrected") ||
+                   (category == "2j1b" && subcategory == "lowMET_mtt_vlowPtLO") ||
+                   (category == "2j1b" && subcategory == "lowMET_mh_vlowPtLO") ||
+                   (category == "2j1b" && subcategory == "lowMET_mtt_lowPtLO") ||
+                   (category == "2j1b" && subcategory == "lowMET_mh_lowPtLO") ||
+                   (category == "2j2b+" && subcategory == "lowMET_mtt_vlowPtLO") ||
+                   (category == "2j2b+" && subcategory == "lowMET_mh_vlowPtLO") ||
+                   (category == "2j2b+" && subcategory == "lowMET_mtt_lowPtLO") ||
+                   (category == "2j2b+" && subcategory == "lowMET_mh_lowPtLO")) continue;
+
                 categories[category+subcategory] = std::make_shared<CategoryModel>(input_file,catId,contribution_names,
                                                                                    args.histo_name(),x,scale_factor_map);
                 EventAnalyzerDataId dataId = catId.Set(data_folder);
@@ -330,6 +346,24 @@ args.medPt1(), args.medPt2(), args.highPt(),
         //Plotting
         for(auto& cat : eventCategories_vec){
             for(const EventSubCategory& sub_cat: subCategories){
+
+                std::string category = GetCategoryName(cat);
+                std::cout<<category<<std::endl;
+                std::string subcategory= ToString(catId.Get<EventSubCategory>());
+                std::cout<<subcategory<<std::endl;
+
+                if((category == "2j0b" && subcategory == "lowMET_mtt_lowPtCorrected") ||
+                   (category == "2j0b" && subcategory == "lowMET_mh_lowPtCorrected") ||
+                   (category == "2j1b" && subcategory == "lowMET_mtt_vlowPtLO") ||
+                   (category == "2j1b" && subcategory == "lowMET_mh_vlowPtLO") ||
+                   (category == "2j1b" && subcategory == "lowMET_mtt_lowPtLO") ||
+                   (category == "2j1b" && subcategory == "lowMET_mh_lowPtLO") ||
+                   (category == "2j2b+" && subcategory == "lowMET_mtt_vlowPtLO") ||
+                   (category == "2j2b+" && subcategory == "lowMET_mh_vlowPtLO") ||
+                   (category == "2j2b+" && subcategory == "lowMET_mtt_lowPtLO") ||
+                   (category == "2j2b+" && subcategory == "lowMET_mh_lowPtLO")) continue;
+
+
                 TCanvas* c = new TCanvas(("fit_"+GetCategoryName(cat)+"_"+ToString(sub_cat)).c_str(),
                                      ("fit in eventCategory " + GetCategoryName(cat) + ToString(sub_cat)).c_str(),800,400) ;
                 RooPlot* frame = x.frame() ;
