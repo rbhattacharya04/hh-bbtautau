@@ -349,7 +349,7 @@ args.medPt1(), args.medPt2(), args.highPt(),
 
                 std::string category = GetCategoryName(cat);
                 std::cout<<category<<std::endl;
-                std::string subcategory= ToString(catId.Get<EventSubCategory>());
+                std::string subcategory= ToString(sub_cat);
                 std::cout<<subcategory<<std::endl;
 
                 if((category == "2j0b" && subcategory == "lowMET_mtt_lowPtCorrected") ||
