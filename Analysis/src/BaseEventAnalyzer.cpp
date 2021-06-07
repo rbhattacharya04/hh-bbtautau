@@ -26,7 +26,7 @@ BaseEventAnalyzer::BaseEventAnalyzer(const AnalyzerArguments& _args, Channel cha
 {
     std::cout << "Initializing uncertainties... " << std::flush;
     EventCandidate::InitializeUncertainties(ana_setup.period, false, args.working_path(),
-                                            signalObjectSelector.GetTauVSjetDiscriminator().first);
+                                            signalObjectSelector.GetTauVSjetDiscriminator().first, args.applyJER());
     std::cout << "done." << std::endl;
     if(ana_setup.syncDataIds.size()) {
         outputFile_sync = root_ext::CreateRootFile(args.output_sync());

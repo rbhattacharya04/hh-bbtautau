@@ -21,6 +21,7 @@ struct AnalyzerArguments : CoreAnalyzerArguments {
     REQ_ARG(std::string, input);
     REQ_ARG(std::string, output);
     OPT_ARG(std::string, output_sync, "sync.root");
+    OPT_ARG(bool, applyJER, false);
 };
 
 struct SyncDescriptor {
